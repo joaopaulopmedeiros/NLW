@@ -3,7 +3,25 @@ import knex from '../database/connection'
 
 class PointController {
     
-    async show (req: Request, res: Response){
+    async index(req: Request, res: Response) {
+        const { city, uf, items } = req.query
+        
+        const parsedItems = String(items)
+            .split(',')
+            .map(item => Number(item.trim()))
+
+        const points = await knex('points')
+            .join('points_items', 'points.id','=', 'points_items.point_id')
+            .whereIn('points_items.item_id', parsedItems)
+            .where('city', String(city))
+            .where('uf', String(uf))
+            .distinct()
+            .select('points.*')
+        
+        return res.json(points)
+    }
+
+    async show(req: Request, res: Response){
         const { id } = req.params  
 
         const point = await knex('points').where('id', id).first()
@@ -20,7 +38,7 @@ class PointController {
         return res.json({ point, items })
     }
 
-    async store (req: Request, res: Response) {
+    async store(req: Request, res: Response) {
         const {
             name,
             email,
@@ -43,7 +61,9 @@ class PointController {
             uf
         }
 
-        const insertedIds = await knex('points').insert(point)
+        const trx = await knex.transaction()
+
+        const insertedIds = await trx('points').insert(point)
     
         const point_id = insertedIds[0]
         
@@ -51,8 +71,10 @@ class PointController {
             return {point_id, item_id}
         })
     
-        await knex('points_items').insert(pointItems)
-    
+        await trx('points_items').insert(pointItems)
+        
+        await trx.commit()
+
         return res.json({
             id: point_id,
             ...point

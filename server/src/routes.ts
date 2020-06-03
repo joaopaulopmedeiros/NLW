@@ -13,8 +13,10 @@ routes.get('/', (req, res) => {
 
 routes.get('/items', itemController.index)
 
-routes.post('/points', pointController.store)
+routes.get('/points', pointController.index)
 
 routes.get('/points/:id', pointController.show)
+
+routes.post('/points', pointController.store)
 
 export default routes

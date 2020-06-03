@@ -3,7 +3,7 @@ import knex from '../database/connection'
 
 class ItemController {
     
-    async index (req: Request, res: Response) {
+    async index(req: Request, res: Response) {
         const items = await knex('items').select('*')
         
         const serializedItems = items.map(item => {
@@ -16,7 +16,7 @@ class ItemController {
     
         res.json(serializedItems)
     }
-    
+
 }
 
 export default ItemController
