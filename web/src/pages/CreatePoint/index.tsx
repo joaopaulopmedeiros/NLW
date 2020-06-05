@@ -1,7 +1,7 @@
-import React, { useEffect, useState, ChangeEvent } from 'react'
+import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react'
 import api from '../../services/api'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { FiArrowLeft } from 'react-icons/fi'
 import { Map, TileLayer, Marker } from 'react-leaflet'
 import { LeafletMouseEvent } from 'leaflet'
@@ -42,6 +42,8 @@ const CreatePoint = () => {
         email: '',
         whatsapp: '',
     })
+
+    const history = useHistory()
 
     useEffect(() => {
         api.get('items').then(response => {
@@ -105,6 +107,37 @@ const CreatePoint = () => {
     
     }
 
+    async function handleSubmit(event: FormEvent) {
+        event.preventDefault()
+
+        const { name, email, whatsapp } = formData
+        const uf = selectedUf
+        const city = selectedCity
+        const [latitude, longitude] = selectedPosition
+        const items = selectedItems
+        
+        const data = {
+            name,
+            email,
+            whatsapp,
+            uf,
+            city,
+            latitude,
+            longitude,
+            items
+        }
+
+        api.post('points', data)
+            .then(response => {
+                console.log(response)
+                alert('cadastro bem-sucedido!')
+            })
+            .catch(error => 
+                console.log(error)
+            )
+        history.push('/')
+    }
+
     return (
        <div id="page-create-point">
            <header>
@@ -114,7 +147,7 @@ const CreatePoint = () => {
                    Voltar para home
                </Link>
            </header>
-           <form>
+           <form onSubmit={handleSubmit}>
                <h1>Cadastro do <br/> ponto de coleta</h1>
 
                <fieldset>
@@ -185,7 +218,7 @@ const CreatePoint = () => {
                            <select onChange={handleSelectCity} value={selectedCity} name="city" id="city">
                                 <option value="0">Selecione uma Cidade</option>
                                 {cities.map((city) => (
-                                     <option value={city}>{city}</option>
+                                     <option key={city} value={city}>{city}</option>
                                 ))}
                            </select>
                        </div>
