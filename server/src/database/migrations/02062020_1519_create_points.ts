@@ -8,8 +8,8 @@ export async function up(knex: Knex){
         table.string('email').notNullable()
         table.string('whatsapp').notNullable()
         table.string('latitude').notNullable()
-        table.string('longitude').notNullable()
-        table.string('city').notNullable()
+        table.float('longitude').notNullable()
+        table.float('city').notNullable()
         table.string('uf', 2).notNullable()
     })
 }
