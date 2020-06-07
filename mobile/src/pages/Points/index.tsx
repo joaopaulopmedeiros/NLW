@@ -63,12 +63,12 @@ const Points = () => {
         params: {
           city: 'Natal',
           uf: 'RN',
-          items: [3,4]
+          items: selectedItems
         }
       }).then(response => {
         setPoints(response.data)
       })
-    })
+    }, [selectedItems])
 
     function handleNavigateBack() {
         return navigation.goBack()
