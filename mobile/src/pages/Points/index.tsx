@@ -1,12 +1,16 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { View, StyleSheet, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import Constants from 'expo-constants'
 import {Feather as Icon} from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import MapView, {Marker} from 'react-native-maps'
 import {SvgUri} from 'react-native-svg'
-
+import api from '../../services/api'
 const Points = () => {
+
+    useEffect(() => {
+
+    })
 
     const navigation = useNavigation()
 
